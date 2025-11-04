@@ -269,11 +269,11 @@
                     <form id="qrForm">
                         <div class="form-floating">
                             <input 
-                                type="url" 
+                                type="text" 
                                 name="url" 
                                 id="url" 
                                 class="form-control" 
-                                placeholder="https://example.com"
+                                placeholder="https://example.com or just example.com"
                                 required
                             >
                             <label for="url">
@@ -333,8 +333,13 @@
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const url = urlInput.value.trim();
+                let url = urlInput.value.trim();
                 if (!url) return;
+
+                // Auto-add https:// if no protocol is provided
+                if (!url.match(/^https?:\/\//)) {
+                    url = 'https://' + url;
+                }
 
                 // Show loading state
                 generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
