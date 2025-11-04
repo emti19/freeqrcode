@@ -16,6 +16,7 @@ dist/
 .env.production.local
 
 # Generated QR code files
+store/
 store/*.png
 store/*.jpg
 store/*.jpeg
@@ -43,5 +44,8 @@ logs
 # Wrangler
 .wrangler/
 
-# Package-lock (optional, depends on preference)
+# Development files (not needed for static deployment)
+views/
+index.js
+package.json
 package-lock.json
