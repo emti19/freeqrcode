@@ -1,8 +1,7 @@
 # Cloudflare Pages Configuration
-
 # Redirect all routes to index.html for SPA behavior
 /*    /index.html   200
 
-# Optional: Redirect specific routes
+# Optional: Redirect specific routes  
 /qr    /index.html   200
 /generator    /index.html   200
