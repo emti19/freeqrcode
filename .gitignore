@@ -40,5 +40,8 @@ Thumbs.db
 logs
 *.log
 
+# Wrangler
+.wrangler/
+
 # Package-lock (optional, depends on preference)
-# package-lock.json
+package-lock.json
