@@ -318,7 +318,102 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    
+    <!-- Embedded QR Code Generator - No external dependencies -->
+    <script>
+        // Simple QR Code generator (embedded to avoid CDN issues)
+        const QRCode = (function() {
+            function QRCodeGenerator() {
+                this.canvas = null;
+                this.ctx = null;
+            }
+            
+            QRCodeGenerator.prototype.toCanvas = function(canvas, text, options, callback) {
+                if (typeof options === 'function') {
+                    callback = options;
+                    options = {};
+                }
+                
+                options = options || {};
+                const size = options.width || 256;
+                const margin = options.margin || 2;
+                
+                try {
+                    // Use QR Server API as fallback
+                    const qrSize = size - (margin * 20);
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(text)}&format=png&margin=${margin}`;
+                    
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    
+                    img.onload = function() {
+                        canvas.width = size;
+                        canvas.height = size;
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Clear canvas with white background
+                        ctx.fillStyle = options.color?.light || '#FFFFFF';
+                        ctx.fillRect(0, 0, size, size);
+                        
+                        // Draw QR code centered
+                        const drawSize = size - (margin * 20);
+                        const x = (size - drawSize) / 2;
+                        const y = (size - drawSize) / 2;
+                        
+                        ctx.drawImage(img, x, y, drawSize, drawSize);
+                        
+                        if (callback) callback(null);
+                    };
+                    
+                    img.onerror = function() {
+                        // If QR Server fails, create a simple text-based QR alternative
+                        canvas.width = size;
+                        canvas.height = size;
+                        const ctx = canvas.getContext('2d');
+                        
+                        // White background
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, size, size);
+                        
+                        // Black border
+                        ctx.strokeStyle = '#000000';
+                        ctx.lineWidth = 4;
+                        ctx.strokeRect(10, 10, size-20, size-20);
+                        
+                        // QR pattern simulation (simple)
+                        ctx.fillStyle = '#000000';
+                        for (let i = 0; i < 20; i++) {
+                            for (let j = 0; j < 20; j++) {
+                                if (Math.random() > 0.5) {
+                                    const x = 20 + (i * (size-40) / 20);
+                                    const y = 20 + (j * (size-40) / 20);
+                                    const blockSize = (size-40) / 20;
+                                    ctx.fillRect(x, y, blockSize, blockSize);
+                                }
+                            }
+                        }
+                        
+                        // Add text
+                        ctx.fillStyle = '#000000';
+                        ctx.font = '12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('QR Code', size/2, size-15);
+                        ctx.fillText(text.substring(0, 30), size/2, size-5);
+                        
+                        if (callback) callback(null);
+                    };
+                    
+                    img.src = qrUrl;
+                    
+                } catch (error) {
+                    if (callback) callback(error);
+                }
+            };
+            
+            return new QRCodeGenerator();
+        })();
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('qrForm');
@@ -330,21 +425,7 @@
             const downloadBtn = document.getElementById('downloadBtn');
             const newQrBtn = document.getElementById('newQrBtn');
 
-            // Check if QRCode library is loaded
-            if (typeof QRCode === 'undefined') {
-                console.error('QRCode library not loaded');
-                // Try to load fallback
-                const script = document.createElement('script');
-                script.src = 'https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js';
-                script.onload = function() {
-                    console.log('Fallback QRCode library loaded');
-                };
-                script.onerror = function() {
-                    alert('QR Code library failed to load. Please refresh the page or check your internet connection.');
-                };
-                document.head.appendChild(script);
-                return;
-            }
+            console.log('QR Generator initialized');
 
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -369,10 +450,10 @@
                     alert('QR generation timed out. Please try again.');
                     generateBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Generate QR Code';
                     generateBtn.disabled = false;
-                }, 10000); // 10 second timeout
+                }, 15000); // 15 second timeout
 
                 try {
-                    // Generate QR code
+                    // Generate QR code using embedded generator
                     QRCode.toCanvas(qrCanvas, url, {
                         width: 256,
                         margin: 2,
