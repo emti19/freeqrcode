@@ -1,0 +1,12 @@
+# Ignore Node.js files since we're deploying static version
+node_modules
+views
+store
+package.json
+package-lock.json
+index.js
+
+# Development files
+.git
+.gitignore
+README.md
