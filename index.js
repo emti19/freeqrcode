@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const qr_code = require('qrcode');
 
 const app = express();
+const DEFAULT_PORT = Number(process.env.PORT) || 3000;
 
 app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended:false}));
@@ -39,6 +40,20 @@ app.get('/download',function(req,res){
 	res.download(req.query.file_path);
 })
 
-app.listen(3000,function(){
-	console.log('Server listing on 3000');
-});
+function startServer(port) {
+	const server = app.listen(port, function(){
+		console.log('Server listening on ' + port);
+	});
+
+	server.on('error', function(err) {
+		if (err.code === 'EADDRINUSE' && !process.env.PORT) {
+			console.log('Port ' + port + ' is in use. Trying ' + (port + 1) + '...');
+			startServer(port + 1);
+			return;
+		}
+
+		throw err;
+	});
+}
+
+startServer(DEFAULT_PORT);

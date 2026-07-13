@@ -90,6 +90,13 @@
             margin-bottom: 25px;
         }
 
+        .form-floating > label {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .form-control {
             border: 2px solid #e5e7eb;
             border-radius: 12px;
@@ -257,6 +264,14 @@
             .header-title {
                 font-size: 1.5rem;
             }
+
+            .form-floating > label {
+                font-size: 0.9rem;
+            }
+
+            .form-floating .label-extra {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -268,7 +283,8 @@
                     <i class="fas fa-qrcode"></i>
                 </div>
                 <h1 class="header-title">Free Unlimited QR Code Generator</h1>
-                <p class="header-subtitle">Create beautiful QR codes instantly for free</p>
+                <p class="header-subtitle">Create QR codes instantly for free</p>
+                <p class="header-subtitle">(Never Expire)</p>
             </div>
             
             <div class="card-body">
@@ -307,7 +323,7 @@
                             >
                             <label for="url">
                                 <i class="fas fa-link me-2"></i>
-                                Enter URL to generate QR code
+                                Enter URL<span class="label-extra"> to generate QR code</span>
                             </label>
                         </div>
                         
@@ -319,6 +335,12 @@
                         </div>
                     </form>
                 <% } %>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted">
+                        Made with ❤️ by <a href="https://github.com/emti19" target="_blank" class="text-decoration-none">emti19</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
