@@ -3,6 +3,5 @@
   "outputDirectory": "public",
   "devCommand": null,
   "installCommand": null,
-  "framework": null,
-  "public": true
+  "framework": null
 }
